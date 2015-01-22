@@ -1,5 +1,6 @@
 FROM maxexcloo/nginx:latest
 MAINTAINER Max Schaefer <max@excloo.com>
+RUN usermod -u 1000 core && groupmod -g 1000 core && usermod -g 1000 core
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E9C74FEEA2098A6E
 RUN echo "deb http://packages.dotdeb.org/ wheezy-php56 all" > /etc/apt/sources.list.d/php.list
 RUN apt-get update
