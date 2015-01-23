@@ -1,16 +1,24 @@
+#!/bin/bash -x
+
+POSTGRESQL_USER=${POSTGRESQL_USER:-"postgres"}
 POSTGRESQL_PASS=${POSTGRESQL_PASS:-"$(pwgen -B -s 24 1)"}
-chown -R postgres:postgres /data
-if [ ! "$(ls -A /data)" ]; then
-	su postgres -c "/usr/lib/postgresql/9.4/bin/initdb -D /data"
-	su postgres -c "/usr/lib/postgresql/9.4/bin/postgres --config-file=/etc/postgresql/9.4/main/postgresql.conf" &
-	while [ ! -e /run/postgresql/9.4-main.pid ]; do
-		inotifywait -e create -q /run/postgresql/
-	done
-	su postgres -c "/usr/lib/postgresql/9.4/bin/psql -c \"CREATE USER $POSTGRESQL_USER WITH SUPERUSER PASSWORD '$POSTGRESQL_PASS';\""
+
+chown postgres:postgres -R /data
+
+if [ ! -f /data/postgresql.conf ]; then
+
+	su postgres -c "/usr/lib/postgresql/9.4/bin/initdb -A trust -D /data"
+	service postgresql start;
+
+	su postgres -c "/usr/lib/postgresql/9.4/bin/createuser -s $POSTGRESQL_USER"
+	su postgres -c "/usr/lib/postgresql/9.4/bin/psql -c \"ALTER USER $POSTGRESQL_USER WITH PASSWORD '$POSTGRESQL_PASS';\""
+
 	if [[ $POSTGRESQL_DB != "NONE" ]]; then
-		su postgres -c "/usr/lib/postgresql/9.4/bin/createdb -O $POSTGRESQL_USER $POSTGRESQL_DB"
+		su postgres -c "/usr/lib/postgresql/9.4/bin/psql -c \"CREATE DATABASE $POSTGRESQL_DB WITH OWNER $POSTGRESQL_USER;\""
 	fi
-	su postgres -c "/usr/lib/postgresql/9.4/bin/pg_ctl -D /data stop"
+
+	service postgresql stop;
+
 	echo "PostgreSQL Username: $POSTGRESQL_USER"
 	echo "PostgreSQL Password: $POSTGRESQL_PASS"
 fi
