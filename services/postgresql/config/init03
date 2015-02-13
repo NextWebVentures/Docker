@@ -7,14 +7,14 @@ chown postgres:postgres -R /data
 
 if [ ! -f /data/postgresql.conf ]; then
 
-	su postgres -c "/usr/lib/postgresql/9.4/bin/initdb -A trust -D /data"
+	su postgres -c "/usr/lib/postgresql/9.4/bin/initdb -A trust -E UTF8 -D /data"
 	service postgresql start;
 
 	su postgres -c "/usr/lib/postgresql/9.4/bin/createuser -s $POSTGRESQL_USER"
 	su postgres -c "/usr/lib/postgresql/9.4/bin/psql -c \"ALTER USER $POSTGRESQL_USER WITH PASSWORD '$POSTGRESQL_PASS';\""
 
 	if [[ $POSTGRESQL_DB != "NONE" ]]; then
-		su postgres -c "/usr/lib/postgresql/9.4/bin/psql -c \"CREATE DATABASE $POSTGRESQL_DB WITH OWNER $POSTGRESQL_USER;\""
+		su postgres -c "/usr/lib/postgresql/9.4/bin/psql -c \"CREATE DATABASE $POSTGRESQL_DB WITH OWNER $POSTGRESQL_USER WITH ENCODING 'UTF8';\""
 	fi
 
 	service postgresql stop;
