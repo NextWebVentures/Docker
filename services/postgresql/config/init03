@@ -21,4 +21,8 @@ if [ ! -f /data/postgresql.conf ]; then
 
 	echo "PostgreSQL Username: $POSTGRESQL_USER"
 	echo "PostgreSQL Password: $POSTGRESQL_PASS"
+else
+	# dunno why this is needed....
+	mkdir -p /var/run/postgresql/9.4-main.pg_stat_tmp
+	chown postgres:postgres -R /var/run/postgresql
 fi
