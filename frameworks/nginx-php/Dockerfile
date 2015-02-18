@@ -30,7 +30,7 @@ ADD etc /etc
 ADD supervisord.conf /etc/supervisor/conf.d/nginx-php-fpm.conf
 
 # add precompiled module
-ADD build/redis.so /usr/lib/php5/20131226/redis.so
+COPY build/*.so /usr/lib/php5/20131226/
 RUN php5enmod redis
 
 EXPOSE 80
