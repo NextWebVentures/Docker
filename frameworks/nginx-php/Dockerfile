@@ -4,18 +4,16 @@ MAINTAINER Marcin Kurzyna <marcin.kurzyna@nextwebventures.com>
 RUN usermod -u 1000 core && groupmod -g 1000 core && usermod -g 1000 core
 
 # add sources
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62
-RUN echo "deb http://www.nginx.org/packages/mainline/debian/ wheezy nginx" > /etc/apt/sources.list.d/nginx.list
+ADD etc/apt /etc/apt
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E9C74FEEA2098A6E
-RUN echo "deb http://packages.dotdeb.org/ wheezy-php56 all" > /etc/apt/sources.list.d/php.list
 
 RUN apt-get update
 
 # isntall generic
-RUN apt-get install -y curl htop vim net-tools mc bash-completion procps iputils-ping git
+RUN apt-get install -y curl htop vim net-tools mc bash-completion procps iputils-ping git apt-utils dnsmasq
 
-# install PHP
-RUN apt-get install -y nginx
+# install nginx
+RUN apt-get -t testing install -y nginx-extras
 RUN rm -rf /etc/nginx/*.d
 RUN mkdir -p /etc/nginx/addon.d /etc/nginx/conf.d /etc/nginx/host.d /etc/nginx/nginx.d
 
