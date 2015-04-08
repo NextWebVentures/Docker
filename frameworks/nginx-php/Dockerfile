@@ -1,7 +1,7 @@
 FROM maxexcloo/debian:latest
 MAINTAINER Marcin Kurzyna <marcin.kurzyna@nextwebventures.com>
 
-RUN usermod -u 1000 core && groupmod -g 1000 core && usermod -g 1000 core
+RUN usermod -u 1000 core && groupmod -g 1000 core && usermod -g 1000 core && usermod -aG www-data,adm core
 
 # add sources
 ADD etc/apt /etc/apt
