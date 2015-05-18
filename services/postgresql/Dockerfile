@@ -3,6 +3,7 @@ MAINTAINER Max Schaefer <max@excloo.com>
 ENV POSTGRESQL_DB NONE
 ENV POSTGRESQL_USER docker
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8
+RUN sed -i -e 's/http.debian.net/httpredir.debian.org/' /etc/apt/sources.list
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" > /etc/apt/sources.list.d/postgresql.list
 RUN apt-get update
 RUN apt-get install -y postgresql-9.4
